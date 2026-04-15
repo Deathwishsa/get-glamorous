@@ -1,15 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
+import { HeroSliderComponent } from '../../shared/hero-slider/hero-slider.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [HeroSliderComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
-  private dataService = inject(DataService);
-  clientData = this.dataService.getClientData();
-}
+export class HomeComponent {}
