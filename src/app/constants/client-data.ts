@@ -12,6 +12,8 @@ export interface GalleryImage {
   category: 'hair' | 'nails' | 'combo' | 'all';
 }
 
+export type BookingStatus = 'available' | 'requested' | 'booked';
+
 export interface ClientData {
   name: string;
   tagline: string;
@@ -31,6 +33,7 @@ export interface ClientData {
     nails: Service[];
     combos: Service[];
   };
+  mockAvailability: { [date: string]: BookingStatus };
 }
 
 export const CLIENT_DATA: ClientData = {
@@ -45,6 +48,16 @@ export const CLIENT_DATA: ClientData = {
     facebook: "https://facebook.com/luxebloomsalon"
   },
   businessHours: "Mon–Sat 9:00 AM – 6:00 PM",
+
+  mockAvailability: {
+    "2026-04-18": "booked",
+    "2026-04-20": "requested",
+    "2026-04-22": "available",
+    "2026-04-25": "booked",
+    "2026-05-05": "requested",
+    "2026-05-12": "available",
+    "2026-05-15": "booked"
+  },
 
   galleryImages: [
     { url: "https://picsum.photos/id/1011/2000/1200", alt: "Luxury hair transformation", category: "hair" },
