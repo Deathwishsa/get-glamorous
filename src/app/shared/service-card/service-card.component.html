@@ -1,0 +1,19 @@
+<div class="service-card">
+  <div class="card-image">
+    <img [src]="service.image || 'https://picsum.photos/id/1015/600/400'" 
+         [alt]="service.name" loading="lazy">
+  </div>
+  
+  <div class="card-body">
+    <h3>{{ service.name }}</h3>
+    <div class="meta">
+      <span class="price">{{ service.price }}</span>
+      <span class="duration">{{ service.duration }}</span>
+    </div>
+    <p class="description">{{ service.description }}</p>
+    
+    <a routerLink="/booking" class="book-btn">
+      Book This Service
+    </a>
+  </div>
+</div>
