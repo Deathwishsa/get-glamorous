@@ -6,6 +6,12 @@ export interface Service {
   image?: string; // optional placeholder image
 }
 
+export interface GalleryImage {
+  url: string;
+  alt: string;
+  category: 'hair' | 'nails' | 'combo' | 'all';
+}
+
 export interface ClientData {
   name: string;
   tagline: string;
@@ -19,7 +25,7 @@ export interface ClientData {
     tiktok?: string;
   };
   businessHours: string;
-  galleryImages: { url: string; alt: string }[];
+  galleryImages: GalleryImage[];
   services: {
     hair: Service[];
     nails: Service[];
@@ -41,13 +47,16 @@ export const CLIENT_DATA: ClientData = {
   businessHours: "Mon–Sat 9:00 AM – 6:00 PM",
 
   galleryImages: [
-    { url: "https://picsum.photos/id/1011/2000/1200", alt: "Luxury hair transformation" },
-    { url: "https://picsum.photos/id/1005/2000/1200", alt: "Elegant blonde balayage" },
-    { url: "https://picsum.photos/id/201/2000/1200", alt: "Soft glam makeup & nails" },
-    { url: "https://picsum.photos/id/1009/2000/1200", alt: "Nail art perfection" },
-    { url: "https://picsum.photos/id/133/2000/1200", alt: "Modern hair extensions" },
-    { url: "https://picsum.photos/id/160/2000/1200", alt: "Bridal hair & nails combo" },
-    { url: "https://picsum.photos/id/1016/2000/1200", alt: "Voluminous curls" }
+    { url: "https://picsum.photos/id/1011/2000/1200", alt: "Luxury hair transformation", category: "hair" },
+    { url: "https://picsum.photos/id/1005/2000/1200", alt: "Elegant blonde balayage", category: "hair" },
+    { url: "https://picsum.photos/id/201/2000/1200", alt: "Soft glam makeup & nails", category: "nails" },
+    { url: "https://picsum.photos/id/1009/2000/1200", alt: "Nail art perfection", category: "nails" },
+    { url: "https://picsum.photos/id/133/2000/1200", alt: "Modern hair extensions", category: "hair" },
+    { url: "https://picsum.photos/id/160/2000/1200", alt: "Bridal hair & nails combo", category: "combo" },
+    { url: "https://picsum.photos/id/1016/2000/1200", alt: "Voluminous curls", category: "hair" },
+    { url: "https://picsum.photos/id/1003/2000/1200", alt: "Rose gold chrome nails", category: "nails" },
+    { url: "https://picsum.photos/id/102/2000/1200", alt: "Signature blowout & style", category: "hair" },
+    { url: "https://picsum.photos/id/1006/2000/1200", alt: "Full glam combo session", category: "combo" }
   ],
 
   // Professional services with realistic pricing (you can edit later)
