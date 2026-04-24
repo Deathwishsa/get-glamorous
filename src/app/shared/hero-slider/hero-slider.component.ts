@@ -1,11 +1,14 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-hero-slider',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    RouterLink],
   templateUrl: './hero-slider.component.html',
   styleUrls: ['./hero-slider.component.scss']
 })
