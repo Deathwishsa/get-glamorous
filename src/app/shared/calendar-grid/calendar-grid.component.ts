@@ -26,7 +26,7 @@ export class CalendarGridComponent {
     const days = new Date(year, month + 1, 0).getDate();
 
     const result: (Date | null)[] = [];
-    // Empty slots before first day
+    // Empty slots before first day 
     for (let i = 0; i < firstDay; i++) result.push(null);
     // Actual days
     for (let i = 1; i <= days; i++) {
