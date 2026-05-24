@@ -12,10 +12,10 @@ import { PreviewBookingComponent } from './preview-booking/preview-booking.compo
   standalone: true,
   imports: [
     HeroComponent,
-    StatsBarComponent,
-    AboutComponent,
+    // StatsBarComponent,
+    // AboutComponent,
     ServicesComponent,
-    TestimonialsComponent,
+    // TestimonialsComponent,
     PreviewGalleryComponent,
     PreviewBookingComponent,
   ],
