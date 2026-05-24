@@ -1,54 +1,62 @@
-import { Component, inject } from '@angular/core';
-import { DataService } from '../../services/data.service';
+// =============================================================================
+// GALLERY PAGE COMPONENT
+// src/app/page/gallery/gallery.component.ts
+// =============================================================================
+
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BUSINESS, GalleryItem } from '../../common/constant/business';
 
 @Component({
   selector: 'app-gallery',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './gallery.component.html',
-  styleUrls: ['./gallery.component.scss']
+  styleUrls: ['./gallery.component.scss'],
 })
 export class GalleryComponent {
-  private dataService = inject(DataService);
-  clientData = this.dataService.getClientData();
 
-  activeFilter: 'all' | 'hair' | 'nails' | 'combo' = 'all';
-  selectedImageIndex: number | null = null;
+  business = BUSINESS;
+  activeFilter: string = 'All';
+  selectedIndex: number | null = null;
 
-  get filteredImages() {
-    if (this.activeFilter === 'all') return this.clientData.galleryImages;
-    return this.clientData.galleryImages.filter(img => img.category === this.activeFilter);
+  get filteredItems(): GalleryItem[] {
+    if (this.activeFilter === 'All') return this.business.galleryItems;
+    return this.business.galleryItems.filter(item => item.category === this.activeFilter);
   }
 
-  setFilter(filter: 'all' | 'hair' | 'nails' | 'combo') {
+  get selectedItem(): GalleryItem | null {
+    return this.selectedIndex !== null ? this.filteredItems[this.selectedIndex] : null;
+  }
+
+  setFilter(filter: string): void {
     this.activeFilter = filter;
-    this.selectedImageIndex = null; // close lightbox when filter changes
+    this.selectedIndex = null;
   }
 
-  openLightbox(index: number) {
-    this.selectedImageIndex = index;
+  openLightbox(index: number): void {
+    this.selectedIndex = index;
   }
 
-  closeLightbox() {
-    this.selectedImageIndex = null;
+  closeLightbox(): void {
+    this.selectedIndex = null;
   }
 
-  nextImage() {
-    if (this.selectedImageIndex === null) return;
-    this.selectedImageIndex = (this.selectedImageIndex + 1) % this.filteredImages.length;
+  next(): void {
+    if (this.selectedIndex === null) return;
+    this.selectedIndex = (this.selectedIndex + 1) % this.filteredItems.length;
   }
 
-  prevImage() {
-    if (this.selectedImageIndex === null) return;
-    this.selectedImageIndex = (this.selectedImageIndex - 1 + this.filteredImages.length) % this.filteredImages.length;
+  prev(): void {
+    if (this.selectedIndex === null) return;
+    this.selectedIndex = (this.selectedIndex - 1 + this.filteredItems.length) % this.filteredItems.length;
   }
 
-  // Keyboard support (ESC to close)
-  onKeyDown(event: KeyboardEvent) {
-    if (this.selectedImageIndex === null) return;
-    if (event.key === 'Escape') this.closeLightbox();
-    if (event.key === 'ArrowRight') this.nextImage();
-    if (event.key === 'ArrowLeft') this.prevImage();
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    if (this.selectedIndex === null) return;
+    if (event.key === 'Escape')     this.closeLightbox();
+    if (event.key === 'ArrowRight') this.next();
+    if (event.key === 'ArrowLeft')  this.prev();
   }
 }

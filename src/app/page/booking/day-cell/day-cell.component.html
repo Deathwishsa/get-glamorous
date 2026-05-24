@@ -1,0 +1,14 @@
+<!-- DAY CELL -->
+<div
+  class="day-cell"
+  [class.day-cell--today]="isToday"
+  [class.day-cell--past]="isPast"
+  [class.day-cell--booked]="status === 'booked'"
+  [class.day-cell--requested]="status === 'requested'"
+  [class.day-cell--empty]="!date"
+  (click)="onClick()"
+  [attr.aria-label]="date ? (date | date:'MMMM d') + ' — ' + (status || 'available') : null"
+  [attr.role]="date ? 'button' : null"
+>
+  <span *ngIf="date" class="day-cell__num">{{ date.getDate() }}</span>
+</div>

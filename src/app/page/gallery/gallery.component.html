@@ -1,54 +1,104 @@
-<div class="gallery-page section-padding" (keydown)="onKeyDown($event)" tabindex="0">
-  <div class="container">
-    <div class="page-header">
-      <h1>Our Gallery</h1>
-      <p class="subtitle">Moments of beauty, captured</p>
-    </div>
+<!-- ==========================================================================
+     GALLERY PAGE
+     src/app/page/gallery/gallery.component.html
+     ========================================================================== -->
 
-    <!-- Filter Tabs -->
-    <div class="filters">
-      <button 
-        [class.active]="activeFilter === 'all'"
-        (click)="setFilter('all')">All</button>
-      <button 
-        [class.active]="activeFilter === 'hair'"
-        (click)="setFilter('hair')">Hair</button>
-      <button 
-        [class.active]="activeFilter === 'nails'"
-        (click)="setFilter('nails')">Nails</button>
-      <button 
-        [class.active]="activeFilter === 'combo'"
-        (click)="setFilter('combo')">Combos</button>
-    </div>
-
-    <!-- Masonry Grid -->
-    <div class="gallery-grid">
-      <div class="gallery-item" 
-           *ngFor="let image of filteredImages; let i = index"
-           (click)="openLightbox(i)">
-        <img [src]="image.url" [alt]="image.alt" loading="lazy">
-        <div class="overlay">
-          <span class="view-text">View Full</span>
-        </div>
-      </div>
-    </div>
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE HERO
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="page-hero" aria-label="Gallery header">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="page-hero__content container">
+    <span class="section-label">Our Work</span>
+    <h1 class="page-hero__heading pink-gradient-text">The Gallery</h1>
+    <p class="page-hero__sub">
+      Every look tells a story — browse our portfolio of transformations.
+    </p>
   </div>
+</section>
 
-  <!-- Lightbox Modal -->
-  <div class="lightbox" *ngIf="selectedImageIndex !== null" (click)="closeLightbox()">
-    <div class="lightbox-content" (click)="$event.stopImmediatePropagation()">
-      <button class="close-btn" (click)="closeLightbox()" aria-label="Close">✕</button>
-      
-      <img [src]="filteredImages[selectedImageIndex].url" 
-           [alt]="filteredImages[selectedImageIndex].alt">
 
-      <div class="lightbox-caption">
-        <p>{{ filteredImages[selectedImageIndex].alt }}</p>
-      </div>
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FILTER + GRID
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="gallery-section section" aria-label="Photo gallery">
+  <div class="container">
 
-      <!-- Navigation -->
-      <button class="nav-btn prev" (click)="prevImage()" aria-label="Previous">‹</button>
-      <button class="nav-btn next" (click)="nextImage()" aria-label="Next">›</button>
+    <!-- ── Filter Bar ── -->
+    <div class="filter-bar" role="tablist" aria-label="Gallery filter">
+      <button
+        *ngFor="let cat of business.galleryCategories"
+        class="filter-btn"
+        [class.filter-btn--active]="activeFilter === cat"
+        (click)="setFilter(cat)"
+        role="tab"
+        [attr.aria-selected]="activeFilter === cat"
+      >
+        {{ cat }}
+      </button>
     </div>
+
+    <!-- ── Image Grid ── -->
+    <div class="gallery-grid" *ngIf="filteredItems.length > 0">
+      <button
+        *ngFor="let item of filteredItems; let i = index"
+        class="gallery-item"
+        (click)="openLightbox(i)"
+        [attr.aria-label]="'View ' + item.caption"
+      >
+        <img [src]="item.src" [alt]="item.alt" loading="lazy" />
+        <div class="gallery-item__overlay" aria-hidden="true">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+          <span>{{ item.caption }}</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- ── Empty State ── -->
+    <div *ngIf="filteredItems.length === 0" class="gallery-empty">
+      <i class="fa-solid fa-images" aria-hidden="true"></i>
+      <p>No photos in this category yet — check back soon!</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     LIGHTBOX
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div
+  *ngIf="selectedItem"
+  class="lightbox"
+  (click)="closeLightbox()"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="selectedItem.caption"
+>
+  <div class="lightbox__content" (click)="$event.stopPropagation()">
+
+    <!-- Close -->
+    <button class="lightbox__close" (click)="closeLightbox()" aria-label="Close lightbox">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+
+    <!-- Image -->
+    <img
+      class="lightbox__image"
+      [src]="selectedItem.src"
+      [alt]="selectedItem.alt"
+    />
+
+    <!-- Caption -->
+    <p class="lightbox__caption">{{ selectedItem.caption }}</p>
+
+    <!-- Prev / Next -->
+    <button class="lightbox__nav lightbox__nav--prev" (click)="prev()" aria-label="Previous image">
+      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <button class="lightbox__nav lightbox__nav--next" (click)="next()" aria-label="Next image">
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    </button>
+
   </div>
 </div>

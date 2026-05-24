@@ -1,0 +1,50 @@
+<!-- ==========================================================================
+     CALENDAR GRID
+     src/app/page/booking/calendar-grid/calendar-grid.component.html
+     ========================================================================== -->
+
+<div class="calendar" role="application" aria-label="Booking calendar">
+
+  <!-- ── Header ── -->
+  <div class="calendar__header">
+    <button class="calendar__nav" (click)="prevMonth()" aria-label="Previous month">
+      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <span class="calendar__month">{{ monthLabel }}</span>
+    <button class="calendar__nav" (click)="nextMonth()" aria-label="Next month">
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <!-- ── Weekday Labels ── -->
+  <div class="calendar__weekdays" aria-hidden="true">
+    <span *ngFor="let day of weekdays">{{ day }}</span>
+  </div>
+
+  <!-- ── Day Grid ── -->
+  <div class="calendar__grid">
+    <app-day-cell
+      *ngFor="let day of daysInMonth"
+      [date]="day"
+      [status]="day ? getStatus(day) : null"
+      (dateClick)="day && selectDate(day)"
+    ></app-day-cell>
+  </div>
+
+  <!-- ── Legend ── -->
+  <div class="calendar__legend" aria-label="Calendar legend">
+    <span class="legend-item">
+      <span class="legend-item__dot legend-item__dot--available"></span>
+      Available
+    </span>
+    <span class="legend-item">
+      <span class="legend-item__dot legend-item__dot--requested"></span>
+      Requested
+    </span>
+    <span class="legend-item">
+      <span class="legend-item__dot legend-item__dot--booked"></span>
+      Booked
+    </span>
+  </div>
+
+</div>

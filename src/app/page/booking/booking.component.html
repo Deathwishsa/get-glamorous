@@ -1,59 +1,218 @@
-<div class="booking-page section-padding">
-  <div class="container">
-    <div class="page-header">
-      <h1>Book Your Appointment</h1>
-      <p class="subtitle">Choose a date and time – we look forward to pampering you</p>
+<!-- ==========================================================================
+     BOOKING PAGE
+     src/app/page/booking/booking.component.html
+     ========================================================================== -->
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE HERO
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="page-hero" aria-label="Booking page header">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="page-hero__content container">
+    <span class="section-label">Online Booking</span>
+    <h1 class="page-hero__heading pink-gradient-text">Book Your Appointment</h1>
+    <p class="page-hero__sub">
+      Choose your date and time — we'll confirm within 24 hours.
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     BOOKING LAYOUT — Calendar + Details Panel
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="booking-section section" aria-label="Booking calendar and form">
+  <div class="booking-layout container">
+
+    <!-- ── CALENDAR COLUMN ────────────────────────────────────────────── -->
+    <div class="booking-calendar">
+      <app-calendar-grid
+        [currentDate]="currentDate"
+        [availability]="availability"
+        (dateSelected)="onDateSelected($event)"
+      ></app-calendar-grid>
     </div>
 
-    <div class="booking-layout">
-      <!-- Calendar -->
-      <div class="calendar-section">
-        <app-calendar-grid
-          [currentDate]="currentDate"
-          [availability]="clientData.mockAvailability"
-          (dateSelected)="onDateSelected($event)">
-        </app-calendar-grid>
+    <!-- ── DETAILS COLUMN ────────────────────────────────────────────── -->
+    <div class="booking-details">
+
+      <!-- ── Success State ── -->
+      <div *ngIf="bookingState === 'success'" class="booking-success" role="alert">
+        <div class="booking-success__icon">
+          <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+        </div>
+        <h2 class="booking-success__heading">Request Received!</h2>
+        <p class="booking-success__body">
+          Your booking request for
+          <strong>{{ selectedDate | date:'EEEE, MMMM d' }}</strong> at
+          <strong>{{ selectedTime }}</strong> has been sent.
+          {{ business.name }} will confirm within 24 hours.
+        </p>
+        <button class="btn-outline booking-success__reset" (click)="resetBooking()">
+          Book Another Appointment
+        </button>
       </div>
 
-      <!-- Time Slots & Form -->
-      <div class="booking-form" *ngIf="selectedDate">
-        <h3>{{ selectedDate | date:'EEEE, MMMM d, yyyy' }}</h3>
-        <p class="status-badge" 
-           [class.available]="getAvailability(selectedDate) === 'available'"
-           [class.requested]="getAvailability(selectedDate) === 'requested'">
-          {{ getAvailability(selectedDate) | titlecase }}
-        </p>
+      <!-- ── Placeholder (no date selected) ── -->
+      <div
+        *ngIf="bookingState !== 'success' && !selectedDate"
+        class="booking-placeholder"
+        aria-live="polite"
+      >
+        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
+        <p>Select a date on the calendar to see available times</p>
+      </div>
 
+      <!-- ── Date Selected — time slots + form ── -->
+      <div *ngIf="bookingState !== 'success' && selectedDate" class="booking-panel">
+
+        <!-- Selected date heading -->
+        <div class="booking-panel__date">
+          <div class="booking-panel__date-info">
+            <span class="booking-panel__day">{{ selectedDate | date:'EEEE' }}</span>
+            <span class="booking-panel__full">{{ selectedDate | date:'MMMM d, yyyy' }}</span>
+          </div>
+          <span
+            class="availability-badge"
+            [class.availability-badge--available]="getAvailability(selectedDate) === 'available'"
+            [class.availability-badge--requested]="getAvailability(selectedDate) === 'requested'"
+          >
+            {{ getAvailability(selectedDate) | titlecase }}
+          </span>
+        </div>
+
+        <!-- Time Slots -->
         <div class="time-slots">
-          <h4>Available Times</h4>
-          <div class="slots-grid">
-            <button *ngFor="let time of filteredTimeSlots"
-                    [class.selected]="time === selectedTime"
-                    (click)="selectedTime = time">
+          <span class="section-label">Select a Time</span>
+          <div class="time-slots__grid">
+            <button
+              *ngFor="let time of timeSlots"
+              class="time-slot"
+              [class.time-slot--selected]="time === selectedTime"
+              (click)="selectTime(time)"
+              [attr.aria-pressed]="time === selectedTime"
+            >
               {{ time }}
             </button>
           </div>
         </div>
 
-        <form (ngSubmit)="requestAppointment()">
-          <input type="text" placeholder="Your Name" [(ngModel)]="name" name="name" required>
-          <input type="email" placeholder="Email Address" [(ngModel)]="email" name="email" required>
-          <select [(ngModel)]="serviceType" name="serviceType" required>
-            <option value="">Select Service</option>
-            <option value="Hair">Hair</option>
-            <option value="Nails">Nails</option>
-            <option value="Combo">Combo</option>
-          </select>
-          <button type="submit" class="submit-btn">Request Appointment</button>
+        <!-- Details Form -->
+        <form
+          class="details-form"
+          (ngSubmit)="requestAppointment()"
+          #bookingForm="ngForm"
+          novalidate
+          aria-label="Appointment details"
+        >
+          <span class="section-label">Your Details</span>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="b-name">
+                Full Name <span class="form-label__req">*</span>
+              </label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-user" aria-hidden="true"></i>
+                <input
+                  id="b-name"
+                  name="name"
+                  type="text"
+                  class="form-input"
+                  placeholder="Your full name"
+                  [(ngModel)]="form.name"
+                  required
+                  autocomplete="name"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="b-email">
+                Email <span class="form-label__req">*</span>
+              </label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                <input
+                  id="b-email"
+                  name="email"
+                  type="email"
+                  class="form-input"
+                  placeholder="your@email.com"
+                  [(ngModel)]="form.email"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="b-phone">Phone / WhatsApp</label>
+              <div class="form-input-wrap">
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                <input
+                  id="b-phone"
+                  name="phone"
+                  type="tel"
+                  class="form-input"
+                  placeholder="+27 82 000 0000"
+                  [(ngModel)]="form.phone"
+                  autocomplete="tel"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="b-service">
+                Service <span class="form-label__req">*</span>
+              </label>
+              <div class="form-input-wrap form-input-wrap--select">
+                <i class="fa-solid fa-scissors" aria-hidden="true"></i>
+                <select
+                  id="b-service"
+                  name="serviceType"
+                  class="form-input form-input--select"
+                  [(ngModel)]="form.serviceType"
+                  required
+                >
+                  <option value="" disabled>Select a service</option>
+                  <option *ngFor="let s of business.services" [value]="s.title">
+                    {{ s.title }}
+                  </option>
+                </select>
+                <i class="fa-solid fa-chevron-down form-select-arrow" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="booking-actions">
+            <button
+              type="submit"
+              class="btn-primary booking-submit"
+              [disabled]="!canSubmit || bookingState === 'submitting'"
+              [class.booking-submit--loading]="bookingState === 'submitting'"
+            >
+              <ng-container *ngIf="bookingState !== 'submitting'">
+                <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+                Request Appointment
+              </ng-container>
+              <ng-container *ngIf="bookingState === 'submitting'">
+                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                Sending...
+              </ng-container>
+            </button>
+
+            <button type="button" class="booking-cancel" (click)="clearSelection()">
+              Cancel
+            </button>
+          </div>
+
         </form>
-
-        <button class="cancel-btn" (click)="selectedDate = null">Cancel</button>
       </div>
 
-      <!-- Placeholder when no date selected -->
-      <div class="booking-form placeholder" *ngIf="!selectedDate">
-        <p class="empty-state">👆 Select a date on the calendar to see available times</p>
-      </div>
     </div>
   </div>
-</div>
+</section>

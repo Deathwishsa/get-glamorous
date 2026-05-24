@@ -1,0 +1,76 @@
+// =============================================================================
+// DAY CELL STYLES
+// src/app/page/booking/day-cell/day-cell.component.scss
+// =============================================================================
+
+@use '../../../../styles/theme' as t;
+
+.day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-base),
+              color var(--transition-base),
+              transform var(--transition-base);
+  position: relative;
+
+  &__num {
+    font-family: t.$font-body;
+    font-size: t.$font-size-sm;
+    font-weight: 500;
+    color: t.$color-text;
+    line-height: 1;
+  }
+
+  // Hover — available days
+  &:not(&--booked):not(&--past):not(&--empty):hover {
+    background: rgba(t.$color-primary, 0.1);
+    transform: scale(1.1);
+
+    .day-cell__num { color: t.$color-primary; font-weight: 700; }
+  }
+
+  // Today ring
+  &--today {
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border-radius: calc(var(--radius-sm) - 2px);
+      border: 2px solid t.$color-primary;
+      pointer-events: none;
+    }
+
+    .day-cell__num { color: t.$color-primary; font-weight: 700; }
+  }
+
+  // Past — greyed out, no hover
+  &--past {
+    cursor: default;
+    opacity: 0.3;
+  }
+
+  // Booked — red, no click
+  &--booked {
+    background: rgba(220, 60, 60, 0.12);
+    cursor: not-allowed;
+
+    .day-cell__num { color: #c0392b; }
+  }
+
+  // Requested — amber
+  &--requested {
+    background: rgba(245, 124, 0, 0.12);
+
+    .day-cell__num { color: #e65100; }
+  }
+
+  // Empty filler cells
+  &--empty {
+    cursor: default;
+    pointer-events: none;
+  }
+}

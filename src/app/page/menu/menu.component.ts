@@ -1,26 +1,38 @@
-import { Component, inject } from '@angular/core';
-import { DataService } from '../../services/data.service';
-import { ServiceCardComponent } from '../../shared/service-card/service-card.component';
+// =============================================================================
+// MENU PAGE COMPONENT
+// src/app/page/menu/menu.component.ts
+// =============================================================================
+
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { BUSINESS } from '../../common/constant/business';
+
+type MenuTab = 'hair' | 'nails' | 'combos';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [ServiceCardComponent, CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss']
+  styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent {
-  private dataService = inject(DataService);
-  clientData = this.dataService.getClientData();
 
-  activeTab: 'hair' | 'nails' | 'combos' = 'hair';
+  business = BUSINESS;
+  activeTab: MenuTab = 'hair';
 
-  setTab(tab: 'hair' | 'nails' | 'combos') {
-    this.activeTab = tab;
-  }
+  tabs: { key: MenuTab; label: string; icon: string }[] = [
+    { key: 'hair',   label: 'Hair',   icon: 'fa-solid fa-scissors'      },
+    { key: 'nails',  label: 'Nails',  icon: 'fa-solid fa-hand-sparkles' },
+    { key: 'combos', label: 'Combos', icon: 'fa-solid fa-spa'           },
+  ];
 
   get currentServices() {
-    return this.clientData.services[this.activeTab];
+    return this.business.menuServices[this.activeTab];
+  }
+
+  setTab(tab: MenuTab): void {
+    this.activeTab = tab;
   }
 }

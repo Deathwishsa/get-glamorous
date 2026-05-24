@@ -1,35 +1,109 @@
-<div class="menu-page section-padding">
+<!-- ==========================================================================
+     MENU PAGE
+     src/app/page/menu/menu.component.html
+     ========================================================================== -->
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE HERO
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="page-hero" aria-label="Services menu header">
+  <div class="page-hero__glow" aria-hidden="true"></div>
+  <div class="page-hero__content container">
+    <span class="section-label">Premium Beauty Services</span>
+    <h1 class="page-hero__heading pink-gradient-text">Our Menu</h1>
+    <p class="page-hero__sub">
+      Hair, nails and signature combinations — every service crafted with care.
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     TABS + SERVICE GRID
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="menu-section section" aria-label="Service menu">
   <div class="container">
-    <div class="page-header">
-      <h1>Our Menu</h1>
-      <p class="subtitle">Premium hair, nails &amp; signature combinations</p>
-    </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
-      <button 
-        [class.active]="activeTab === 'hair'"
-        (click)="setTab('hair')">
-        Hair Specials
-      </button>
-      <button 
-        [class.active]="activeTab === 'nails'"
-        (click)="setTab('nails')">
-        Nail Specials
-      </button>
-      <button 
-        [class.active]="activeTab === 'combos'"
-        (click)="setTab('combos')">
-        Combo Deals
+    <!-- ── Tab Bar ── -->
+    <div class="tab-bar" role="tablist" aria-label="Service categories">
+      <button
+        *ngFor="let tab of tabs"
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab === tab.key"
+        (click)="setTab(tab.key)"
+        role="tab"
+        [attr.aria-selected]="activeTab === tab.key"
+      >
+        <i [class]="tab.icon" aria-hidden="true"></i>
+        {{ tab.label }}
       </button>
     </div>
 
-    <!-- Services Grid -->
-    <div class="services-grid">
-      <app-service-card 
+    <!-- ── Service Cards ── -->
+    <div class="services-grid" role="tabpanel">
+      <article
         *ngFor="let service of currentServices"
-        [service]="service">
-      </app-service-card>
+        class="service-card"
+      >
+        <!-- Optional image -->
+        <div *ngIf="service.image" class="service-card__image">
+          <img [src]="service.image" [alt]="service.title" loading="lazy" />
+        </div>
+
+        <div class="service-card__body">
+          <div class="service-card__header">
+            <div class="service-card__icon-wrap">
+              <i [class]="service.icon || 'fa-solid fa-spa'" aria-hidden="true"></i>
+            </div>
+            <div>
+              <h3 class="service-card__title">{{ service.title }}</h3>
+              <div class="service-card__meta">
+                <span class="service-card__duration">
+                  <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                  {{ service.duration }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <p class="service-card__description">{{ service.description }}</p>
+
+          <div class="service-card__footer">
+            <span class="service-card__price">{{ service.price }}</span>
+            <a routerLink="/booking" class="btn-primary service-card__cta">
+              <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+              Book Now
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CTA BANNER
+     ══════════════════════════════════════════════════════════════════════════ -->
+<section class="menu-cta" aria-label="Book your appointment">
+  <div class="menu-cta__inner container">
+    <div class="menu-cta__text">
+      <span class="section-label">Ready to Glow?</span>
+      <h2 class="menu-cta__heading">Can't find what you're looking for?</h2>
+      <p class="menu-cta__sub">
+        Reach out and we'll create a custom package just for you.
+      </p>
+    </div>
+    <div class="menu-cta__actions">
+      <a routerLink="/booking" class="btn-primary">
+        <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+        Book Now
+      </a>
+      <a routerLink="/contact-us" class="btn-outline">
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+        Contact Us
+      </a>
     </div>
   </div>
-</div>
+</section>
